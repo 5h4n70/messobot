@@ -23,7 +23,7 @@ module.exports = {
             onlyHeadAdmin: true,
             onlyAdmin: true,
             onlyHeadModerator: false,
-            onlyModerator: true,
+            onlyModerator: false,
             onlyTrialModerator: false
         }
 
