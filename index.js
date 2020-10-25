@@ -165,7 +165,7 @@ client.on("message", async message => {
 
   if (message.mentions.members.array().length && message.channel.type != "dm") {
     // let ripk = message.mentions.members.array().find(element => element.id == "557281845436481539");
-    let ripk = message.mentions.members.has("557281845436481539");
+    let ripk = message.mentions.members.has("733824069581013044");
     let local_prm = {
       onlyServerManager: true,
       onlyHeadAdmin: true,
