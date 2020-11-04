@@ -50,6 +50,7 @@ const monitor_channel = [];
 
 
 
+
 client.on("ready", async () => {
   console.log(`${client.user.tag} is online`);
   client.user.setUsername("Supplier\'s Utilities");
@@ -180,7 +181,7 @@ client.on("message", async message => {
       message.delete({
         timeout: 1000
       });
-      message.reply("you are not allowed to ping Memesso in chat. Continuing will result in a mute !!")
+      message.reply("you are not allowed to ping urmemesupplier in chat. Continuing will result in a mute !!")
     }
   }
 
