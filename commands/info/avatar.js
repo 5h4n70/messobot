@@ -1,10 +1,12 @@
 const { MessageEmbed, Message, Client } = require("discord.js");
+const config = require("../../config.json");
 
 module.exports = {
     name: "avatar",
     category: "info",
     aliases: ["icon", "pfp"],
-
+    description: ' View someone\'s avatar',
+    usage: `${config.prefix}pfp @mention_user`,
     run: async (client, message, args) => {
         let user;
 
@@ -25,8 +27,7 @@ module.exports = {
             .setDescription(`[Avatar URL of **${user.tag}**](${avatar})`)
             .setColor("RANDOM")
             .setImage(avatar)
-            .setFooter(`Requested by ${message.author.tag}`)
-
+            .setFooter(`Requested by ${message.author.tag}`);
         return message.channel.send(embed)
     }
 }

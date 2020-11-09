@@ -6,21 +6,27 @@ const config = require("../../config.json");
 module.exports = {
     name: 'help',
     category: 'info',
-    aliases: ["h"],
-    description: ' Command List and Usages',
-    usage: '<cmd>',
+    aliases: [""],
+    description: ' Get the list of Commands',
+    usage: `${config.prefix}help`,
 
-    run: async (client, message) => {
-
+    run: async (client, message, args, cmd) => {
+        let k = 0;
         const embed = new MessageEmbed()
-            .setTitle("** List of Commands:**")
-            .setColor('d413ee')
-            .setDescription(` ${config.prefix}say your_messsage\n${config.prefix}csay #target_channel your_message
-            ${config.prefix}ban @user reason\n${config.prefix}kick @user reason\n${config.prefix}play what_to_play\n${config.prefix}mute @user time_in_hour
-            ${config.prefix}watch what_to_watch\n${config.prefix}ping \n ${config.prefix}avatar \n ${config.prefix}meme \n${config.prefix}whois
-            ${config.prefix}lock #channel_name Reason_for_Locking\n${config.prefix}unlock #channel_name\n${config.prefix}lock-server
-            ${config.prefix}unlock-server\n${config.prefix}ss`)
-            .setFooter(`requested by ${message.author.tag}`)
+            .setTitle("Help !")
+            .setColor('5A00FF')
+            .setDescription(`List of Commands`)
+            .setTimestamp()
+            .setFooter(`requested by  ${message.author.tag}`);
+
+
+        client.commands.forEach(element => {
+            embed.addField(element.name, `**aliases:** ${element.aliases}\n**Description:** ${element.description}\n**Usages:** ${element.usage} `);
+
+        });
+
+
+
         message.channel.send(embed)
     }
 }

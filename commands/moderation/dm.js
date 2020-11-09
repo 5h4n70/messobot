@@ -14,16 +14,16 @@ module.exports = {
     name: "dm",
     category: "moderation",
     aliases: ["private"],
-    description: "set bot status",
-    usage: `${config.prefix}play with me \n ${config.prefix}watch pumba's Video`,
+    description: "Send Message to a Server Memeber ",
+    usage: `${config.prefix}dm @user Hello`,
 
     run: async (client, message, args, cmd) => {
         var local_prm = {
             onlyServerManager: true,
             onlyHeadAdmin: true,
             onlyAdmin: true,
-            onlyHeadModerator: false,
-            onlyModerator: false,
+            onlyHeadModerator: true,
+            onlyModerator: true,
             onlyTrialModerator: false
         }
 
@@ -34,7 +34,7 @@ module.exports = {
             var fm = message.mentions.members.first();
             if (!fm) {
                 const targetMember = mid;
-                const guildId = config.serverId;
+                const guildId = config.serverID;
                 const server = client.guilds.cache.get(guildId);
                 const serverMember = server.members.cache.get(targetMember);
                 if (serverMember)

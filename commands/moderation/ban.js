@@ -1,8 +1,12 @@
 const{MessageEmbed,Message} = require("discord.js")
+const config = require("../../config.json");
 
 module.exports ={
     name:"ban",
     category:"moderation",
+    aliases:"hammer",
+    description:" Ban a user",
+    usage:` ${config.prefix}ban`,
 
     run:async(client,msg,args) =>{
         if(!msg.member.hasPermission('BAN_MEMBERS')) return msg.reply({embed:{color:"RED",description:'You dont have permission to use this command'}}); // this line is used so that people without ban members perms cannot use this command

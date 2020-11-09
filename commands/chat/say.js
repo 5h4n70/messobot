@@ -1,7 +1,12 @@
-const { MessageEmbed, Client } = require("discord.js");
+const {
+    MessageEmbed,
+    Client
+} = require("discord.js");
 const config = require("../../config.json")
 const myFunctions = require('../../functions.js');
-const { is_allowed } = require("../../functions.js");
+const {
+    is_allowed
+} = require("../../functions.js");
 
 module.exports = {
     name: "say",
@@ -25,8 +30,7 @@ module.exports = {
             message.delete();
             if (cmd == "say") {
                 message.channel.send(args.join(" "));
-            }
-            else if (cmd == "csay") {
+            } else if (cmd == "csay") {
                 var tp = args[0].slice(2, -1);
                 var tp1 = message.guild.channels.cache.find(ch => ch.id === tp);
                 if (!tp1)
@@ -34,9 +38,8 @@ module.exports = {
                 else
                     tp1.send(args.slice(1).join(" "));
             }
-        }
-        else
-         message.reply("you are not allowed to use this command! 😐");
+        } else
+            message.reply("you are not allowed to use this command! 😐");
 
     }
 }

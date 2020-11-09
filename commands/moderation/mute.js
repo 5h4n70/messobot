@@ -1,28 +1,31 @@
 const redis = require("../../redis.js")
-const config = require("../../config.json");
 const {
     MessageEmbed,
     Client
 } = require("discord.js");
+const config = require("../../config.json");
+
 const myFunctions = require('../../functions.js');
 const {
     is_allowed
 } = require("../../functions.js");
-const guildId = config.serverId;
+const guildId = config.serverID;
 const muteRoleId = config.muteRole;
 
 module.exports = {
     name: "mute",
     category: "moderation",
     aliases: ["stop", "unmute"],
+    description:" mute an user",
+    usage:`${config.prefix}mute @user`,
     run: async function (client, message, args, cmd) {
         var local_prm = {
             onlyServerManager: true,
             onlyHeadAdmin: true,
-            onlyAdmin: false,
-            onlyHeadModerator: false,
+            onlyAdmin: true,
+            onlyHeadModerator: true,
             onlyModerator: true,
-            onlyTrialModerator: false
+            onlyTrialModerator: true
         };
         const redisKeyPrefix = 'muted-';
 
@@ -41,8 +44,10 @@ module.exports = {
             // console.log(args.length)
 
             var targeted_users = message.mentions.members;
-            const server = client.guilds.cache.get(guildId);
-            const muteRole = server.roles.cache.find((role) => role.name.toLowerCase() === "muted");
+            const server = client.guilds.cache.get(config.serverId);
+            let  muteRole =server.roles.cache.find((role) => role.id == config.muteRole);
+            // server.roles.cache.find((role) => role.name.toLowerCase() === "muted");
+
             if (!targeted_users)
                 message.reply("Mention atleast One member!");
             else if (!muteRole){

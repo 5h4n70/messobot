@@ -7,14 +7,15 @@ app.get('/', (req, res) => res.send("Don\'t hack me pls"));
 app.listen(port, () => console.log(`Bot listening at http://localhost:${port}`));
 
 // ================= START BOT CODE ===================
-
+let CC_id = new Set();
 
 
 var last_story_teller;
 
 const {
   Client,
-  Collection
+  Collection,
+  MessageEmbed
 } = require("discord.js")
 
 
@@ -42,6 +43,13 @@ var fromProofChannel = new Set();
 
 const prefix = config.prefix;
 const myFunctions = require('./functions.js');
+
+
+const channelMonitorFunctions = require('./channelMonitor.js');
+const {
+  muteMemeMentions
+} = require('./functions.js');
+
 const monitor_channel = [];
 
 ['command'].forEach(handler => {
@@ -53,11 +61,16 @@ const monitor_channel = [];
 
 client.on("ready", async () => {
   console.log(`${client.user.tag} is online`);
+
+  setInterval(() => {
+    let d = client.guilds.cache.get(config.serverId).memberCount;
+    client.user.setActivity(`over ${d} members !`, {
+      type: 'WATCHING',
+      url: "https://discord.gg/asdfa"
+    }).catch(console.error);
+  }, 10 * 1000);
+
   client.user.setUsername("Supplier\'s Utilities");
-  client.user.setActivity('🌺 Hello :) !', {
-    type: 'WATCHING',
-    url: "https://discord.gg/asdfa"
-  }).catch(console.error);
 });
 
 
@@ -149,6 +162,7 @@ client.on("message", async message => {
 
   ///////////////////////////////// dm stufssssssssssssssssssssssssssssssssssssssssssssss
 
+  ////////////////// channel monitor stuffs
 
   /*
     monitor_channel.forEach(item => {
@@ -159,14 +173,40 @@ client.on("message", async message => {
     */
 
 
+  /*
+  if (message.channel.id == '765297568082427923') {
+    channelMonitorFunctions.count_channel_monitor(message);
+  }
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   client.prefix = prefix;
   if (message.author.bot) return; // This line makes sure that the bot does not respond to other bots
   if (!message.guild) return;
 
 
+
+
+
+
   if (message.mentions.members.array().length && message.channel.type != "dm") {
     // let ripk = message.mentions.members.array().find(element => element.id == "557281845436481539");
-    let ripk = message.mentions.members.has("733824069581013044");
+    // let ripk = message.mentions.members.has("733824069581013044");
+    let ripk = message.mentions.members.has(config.ownerID);
     let local_prm = {
       onlyServerManager: true,
       onlyHeadAdmin: true,
@@ -177,13 +217,14 @@ client.on("message", async message => {
     };
     var go = myFunctions.is_allowed(local_prm, myFunctions.check_permissions(message.member));
     if (!go && ripk) {
-      // console.log("delete " + ripk);
-      message.delete({
-        timeout: 1000
-      });
-      message.reply("you are not allowed to ping urmemesupplier in chat. Continuing will result in a mute !!")
+      await myFunctions.muteMemeMentions(client, message);
+      message.delete();
     }
   }
+
+
+
+
 
 
 
@@ -196,9 +237,32 @@ client.on("message", async message => {
 
   let command = client.commands.get(cmd);
   if (!command) command = client.commands.get(client.aliases.get(cmd));
-  if (command)
+  if (command) {
+    if (CC_id.has(cmd))
+      return message.reply("This command has 15sec cooldown!!")
+
     command.run(client, message, args, cmd);
+    if (cmd == 'gnum') {
+      CC_id.add('gnum');
+      setTimeout(function () {
+        CC_id.delete('gnum');
+      }, 15000);
+    }
+
+  }
+  // command.run(client, message, args, cmd);
 });
+
+
+
+
+
+
+
+
+
+
+
 
 function channel_monitor(message) {
 
