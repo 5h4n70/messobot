@@ -1,12 +1,13 @@
 const config = require("./config.json");
 const Discord = require("discord.js");
+
 const botMasters = config.botMasters; //"600331085590691841";
-const ServerManager = config.ServerManager; //"600331085590691841" //who am i
-const HeadAdmin = config.HeadAdmin; //"535502391718576140"; ///admin
-const Admin = config.Admin; // "535502391718576140"; ///admin
-const HeadModerator = config.HeadModerator; //"654597283354116096"; //Headmod
-const Moderator = config.Moderator; //"567039267939942420"; // mod
-const TrialModerator = config.TrialModerator; //"600199530436362250"; //trainee mod
+const ServerManager = config.serverManager;
+const HeadAdmin = config.HeadAdmin;
+const Admin = config.Admin;
+const HeadModerator = config.HeadModerator;
+const Moderator = config.Moderator;
+const TrialModerator = config.TrailModerator;
 const Qdb = require('quick.db');
 
 
@@ -48,9 +49,11 @@ module.exports = {
             isModerator: false,
             isTrialModerator: false
         };
-        messageMember.roles.cache.forEach(f => {
+        messageMember.roles.cache.array().forEach(f => {
             // console.log(Moderator + "=" + f.id)
-            if (f.id === ServerManager)
+
+            //ServerManager,HeadAdmin,Moderator,Admin,HeadModerator,TrialModerator
+            if (f.id === ServerManager || f.id == botMasters)
                 obj.isServerManager = true;
             else if (f.id === HeadAdmin)
                 obj.isHeadAdmin = true;
@@ -59,10 +62,16 @@ module.exports = {
             else if (f.id === Admin)
                 obj.isAdmin = true;
             else if (f.id === TrialModerator)
-                obj.isTrialModerator == true;
+                obj.isTrialModerator = true;
             else if (f.id === HeadModerator)
                 obj.isHeadModerator = true;
         });
+
+        // console.log(JSON.stringify(obj));
+        // for (const [key, value] of Object.entries(obj)) {
+        //     if(value)
+        //       console.log(key+":"+value);
+        // }
 
         return obj;
     },
@@ -189,16 +198,16 @@ module.exports = {
 
         return TABLE;
     },
-    muteMemeMentions:async function (client,message) {
+    muteMemeMentions: async function (client, message) {
         // console.log("delete " + ripk);
-       
+
         message.reply("you are not allowed to ping urmemesupplier in chat. Continuing will result in a mute !!")
         let mention_table = new Qdb.table('mentionCount');
         mention_table.add(message.author.id, 1);
         let k = mention_table.get(message.author.id);
         if (k >= 3) {
             const server = client.guilds.cache.get(config.serverId);
-            let  muteRole =server.roles.cache.find((role) => role.id == config.muteRole);
+            let muteRole = server.roles.cache.find((role) => role.id == config.muteRole);
             /*
             server.roles.fetch(config.muteRole)
             .then(role => {
@@ -206,8 +215,8 @@ module.exports = {
             })
             .catch(console.error);
             */
-            
-             if (muteRole) {
+
+            if (muteRole) {
                 message.member.roles.add(muteRole);
                 let embed = new Discord.MessageEmbed()
                     .setTitle('Auto Mute log')
@@ -215,9 +224,8 @@ module.exports = {
                     .setDescription(`${message.author} has been muted for mentioning urmemesupplier !! `)
                     .setTimestamp()
                 message.channel.send(embed);
-            }
-            else 
-            console.log(`k = ${k} and muteRole not found ${muteRole}`);
+            } else
+                console.log(`k = ${k} and muteRole not found ${muteRole}`);
         }
 
     }

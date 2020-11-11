@@ -77,6 +77,11 @@ client.on("ready", async () => {
 
 client.on("message", async message => {
 
+
+
+
+
+
   // if ( message.channel.type == "dm" && message.mentions.members.has('557281845436481539')) {
 
 
@@ -173,12 +178,11 @@ client.on("message", async message => {
     */
 
 
-  /*
+  
   if (message.channel.id == '765297568082427923') {
     channelMonitorFunctions.count_channel_monitor(message);
   }
 
-*/
 
 
 
@@ -194,12 +198,43 @@ client.on("message", async message => {
 
 
 
-  client.prefix = prefix;
+
+  // client.prefix = prefix;
+
   if (message.author.bot) return; // This line makes sure that the bot does not respond to other bots
   if (!message.guild) return;
+  /// don't  respond 
+  if (!message.member) 
+  {
+    message.guild.members.fetch(message.author.id)
+      .then(ow => message.member = ow)
+      .catch(console.error);
+    // message.member = await message.guild.member(message.author);
+  }
 
 
 
+  let epic_permission_check = {
+    onlyServerManager: true,
+    onlyHeadAdmin: true,
+    onlyAdmin: true,
+    onlyHeadModerator: true,
+    onlyModerator: true,
+    onlyTrialModerator: false
+  };
+
+ console.log('checking permission for V >'+message.author.tag);
+  let permission_in_general =  myFunctions.is_allowed(epic_permission_check, myFunctions.check_permissions(message.member)) ;
+
+
+
+
+
+
+
+  if (message.channel.id != '764933106820972544' && !permission_in_general) return ;
+
+  // console.log(permission_in_general + " for "+message.author.tag);
 
 
 
@@ -207,7 +242,7 @@ client.on("message", async message => {
     // let ripk = message.mentions.members.array().find(element => element.id == "557281845436481539");
     // let ripk = message.mentions.members.has("733824069581013044");
     let ripk = message.mentions.members.has(config.ownerID);
-    let local_prm = {
+    let local_prmm = {
       onlyServerManager: true,
       onlyHeadAdmin: true,
       onlyAdmin: true,
@@ -215,7 +250,7 @@ client.on("message", async message => {
       onlyModerator: true,
       onlyTrialModerator: false
     };
-    var go = myFunctions.is_allowed(local_prm, myFunctions.check_permissions(message.member));
+    var go = myFunctions.is_allowed(local_prmm, myFunctions.check_permissions(message.member));
     if (!go && ripk) {
       await myFunctions.muteMemeMentions(client, message);
       message.delete();
@@ -230,7 +265,7 @@ client.on("message", async message => {
 
 
   if (!message.content.startsWith(prefix)) return; // This line makes sure that the bot does not respond to other messages with the bots prefix
-  if (!message.member) message.member = await message.guild.fetchMember(message);
+
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const cmd = args.shift().toLowerCase();
   if (cmd.length === 0) return;
@@ -238,8 +273,12 @@ client.on("message", async message => {
   let command = client.commands.get(cmd);
   if (!command) command = client.commands.get(client.aliases.get(cmd));
   if (command) {
-    if (CC_id.has(cmd))
+    if (CC_id.has('gnum'))
       return message.reply("This command has 15sec cooldown!!")
+    
+
+  //  console.log('command passed ,used by'+message.author.tag);
+
 
     command.run(client, message, args, cmd);
     if (cmd == 'gnum') {

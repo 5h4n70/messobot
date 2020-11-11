@@ -58,6 +58,7 @@ module.exports = {
                 onlyTrialModerator: false
             }
             var go = myFunctions.is_allowed(local_prm, myFunctions.check_permissions(message.member));
+            go = message.member.hasPermission('ADMINISTRATOR');
             if (go) {
                 message.author.send('The number is : ' + Qdb.get('last_bot_guess'));
             }

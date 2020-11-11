@@ -17,6 +17,7 @@ module.exports = {
 
 
     run: async function (client, message, args, cmd) {
+        
         var local_prm = {
             onlyServerManager: true,
             onlyHeadAdmin: true,
