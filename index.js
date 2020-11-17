@@ -223,7 +223,7 @@ client.on("message", async message => {
     onlyTrialModerator: false
   };
 
- console.log('checking permission for V >'+message.author.tag);
+//  console.log('checking permission for V >'+message.author.tag);
   let permission_in_general =  myFunctions.is_allowed(epic_permission_check, myFunctions.check_permissions(message.member)) ;
 
 
@@ -273,11 +273,11 @@ client.on("message", async message => {
   let command = client.commands.get(cmd);
   if (!command) command = client.commands.get(client.aliases.get(cmd));
   if (command) {
-    if (CC_id.has('gnum'))
+    if (CC_id.has(cmd))
       return message.reply("This command has 15sec cooldown!!")
     
 
-  //  console.log('command passed ,used by'+message.author.tag);
+   console.log('command passed ,used by'+message.author.tag);
 
 
     command.run(client, message, args, cmd);

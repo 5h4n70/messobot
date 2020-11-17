@@ -1,4 +1,4 @@
-const redis = require("../../redis.js")
+
 const {
     MessageEmbed,
     Client
@@ -15,7 +15,7 @@ const muteRoleId = config.muteRole;
 module.exports = {
     name: "mute",
     category: "moderation",
-    aliases: ["stop", "unmute"],
+    aliases: [ "unmute"],
     description:" mute an user",
     usage:`${config.prefix}mute @user`,
     run: async function (client, message, args, cmd) {
@@ -62,7 +62,7 @@ module.exports = {
             else if (targeted_users && muteRole) {
                 var ml = [];
                 targeted_users.forEach(element => {
-                    if (cmd == "mute" || cmd == "stop") {
+                    if (cmd == "mute" ) {
                         element.roles.add(muteRole)
                     } else if (cmd == "unmute") {
 
@@ -79,7 +79,7 @@ module.exports = {
                 // message.channel.send( + "  " + cmd + "d!");
                 const embed = new MessageEmbed()
                     .setTitle(`Mute log : command used by ${message.author.tag}`)
-                    .setDescription(`${ml.join(" , ")} ${txt} ${cmd}d!`)
+                    .setDescription(`${ml.join(" , ")} ${txt} ${cmd}ed!`)
                     .setColor('f30e0e')
                     .setTimestamp();
 

@@ -11,7 +11,7 @@ const {
 module.exports = {
     name: "say",
     category: "chat",
-    aliases: ["csay"],
+    aliases: ["csay","embed"],
     description: "To send messages by the bot",
     usage: `${config.prefix}say hello \n ${config.prefix}csay #mention_aChannel Your_message`,
 
@@ -39,6 +39,16 @@ module.exports = {
                 else
                     tp1.send(args.slice(1).join(" "));
             }
+            else if(cmd=='embed'){
+            
+
+                const p = new Discord.MessageEmbed()
+                .setColor('RANDOM')
+                .setDescription(args.join(" "));
+           
+                message.channel.send(p);
+             }
+            
         } else
             message.reply("you are not allowed to use this command! 😐");
 

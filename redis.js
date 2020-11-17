@@ -1,23 +1,16 @@
-const  redis=require('redis')
-const redisPath="//redis-16635.c241.us-east-1-4.ec2.cloud.redislabs.com:16635?password=6Fhvs87Exrdwddr4kRP0rC3qVaykMILe"
-
-module.exports = async function(){
-    return await new Promise((resolve,reject) =>{
-        const client=redis.createClient({
-            url:redisPath
-        })
-    client.on('error',(err)=>{
-        console.error("redis error:",err);
-        client.quit();
-        reject(err);
+function isUserID(test) {
+    let ret=true,tmp=0;
+    test = Array.from(test);
+    test.forEach(val=>{
+        tmp = val.charCodeAt();
+        if( tmp <= '0'.charCodeAt()  || tmp>='9'.charCodeAt() )
+          ret = false;
     })
-    client.on('ready',()=>{
-        resolve(client);
-    })
+    return ret;
+}
 
-    });
-
-};
+let d = '15464645664565d6464565456456664';
+isUserID(d)
 
 
 
