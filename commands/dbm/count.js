@@ -6,13 +6,38 @@ const {
 const config = require("../../config.json");
 const Qdb = require('quick.db');
 const myFunctions = require('../../functions.js');
-
+async function get_the_last_number(client, message) {
+    const channelID = config.countChannel;
+    const serverID = config.serverId;
+    let pt = 1,
+        good = 0;
+    const target_channel = message.guild.channels.cache.get(channelID);
+    const collected = new Array();
+    await target_channel.messages.fetch({
+            limit: 5
+        })
+        .then((msg) => {
+            msg.forEach(element => {
+                const temp = Number(element.content);
+                // console.log(temp);
+                if (temp)
+                    collected.push(temp)
+            });
+        })
+        .catch(console.error);
+    for (let k = collected.length - 1; k > 0; k--) {
+        if (collected[k] + 1 != collected[k - 1])
+            return 0;
+    }
+    good = collected[0];
+    return good;
+}
 
 
 module.exports = {
     name: "count",
     category: "info",
-    aliases: ["set-count", "top-counter"],
+    aliases: ["set-count", "top-counter", "fix-count"],
     description: ' see the next number to count ',
     usage: `${config.prefix}count`,
 
@@ -75,7 +100,20 @@ module.exports = {
 
 
                 // console.log(d);
-            } else {
+            } 
+            else if(cmd == 'fix-count'){
+                   const k = await get_the_last_number(client,message);
+                   if(k){
+                    Qdb.delete('last_count');
+                    Qdb.push('last_count', k);
+                    message.reply(new MessageEmbed().setDescription(`\n fixed !! 😀 \n`));
+                   }
+                   else{
+                       message.reply(new MessageEmbed().setDescription(`Sorry, failed to fix \n try manually :(  )`));
+                   }
+            }
+            
+            else {
                 let d = Qdb.get('last_count') + 1;
                 message.reply("The number  to count Next is : " + d);
             }

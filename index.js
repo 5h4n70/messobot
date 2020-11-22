@@ -1,15 +1,15 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-
+const die = require('util').promisify(setTimeout);
 app.get('/', (req, res) => res.send("Don\'t hack me pls"));
 
 app.listen(port, () => console.log(`Bot listening at http://localhost:${port}`));
 
 // ================= START BOT CODE ===================
 let CC_id = new Set();
-
-
+const apply = require('./commands/chat/apply.js');
+let last_counter = '0';
 var last_story_teller;
 
 const {
@@ -146,23 +146,22 @@ client.on("message", async message => {
   ///////////////////////////////// dm stufssssssssssssssssssssssssssssssssssssssssssssss
 
   if (message.channel.type == "dm" && !message.author.bot) {
-    if (message.content.startsWith(config.prefix))
-      return;
-    /* if(message.content=='add'){
-       Qdb.push('ke1','this is the value');
-       message.react('😅')
-     }
-     else if(message.content=='get'){
-       message.reply( Qdb.get('ke1'))
-       message.react('🤦')
-     }
-     else if (message.author.id == "521330948382654487") {
-       rikDM(message);
 
-     } else*/
-    {
+
+    const Ongoing = new Qdb.table('epicT');
+
+    if (message.content == `${config.prefix}apply`) {
+
+      const omgf = await Ongoing.add(message.author.id, 1);
+      
+      const oka = await apply.run(client, message, '-', 'apply');
+    } else if (!Ongoing.has(message.author.id)) {
+      // console.log('dmable has');
+      // console.log(Ongoing.all());
       myFunctions.dm_received(client, message);
     }
+
+
   }
 
   ///////////////////////////////// dm stufssssssssssssssssssssssssssssssssssssssssssssss
@@ -178,9 +177,17 @@ client.on("message", async message => {
     */
 
 
-  
+
   if (message.channel.id == '765297568082427923') {
-    channelMonitorFunctions.count_channel_monitor(message);
+    if (last_counter == message.author.id) {
+      message.delete({
+        timeout: 1000
+      })
+    } else {
+
+      last_counter = message.author.id;
+      channelMonitorFunctions.count_channel_monitor(message);
+    }
   }
 
 
@@ -204,8 +211,7 @@ client.on("message", async message => {
   if (message.author.bot) return; // This line makes sure that the bot does not respond to other bots
   if (!message.guild) return;
   /// don't  respond 
-  if (!message.member) 
-  {
+  if (!message.member) {
     message.guild.members.fetch(message.author.id)
       .then(ow => message.member = ow)
       .catch(console.error);
@@ -223,8 +229,8 @@ client.on("message", async message => {
     onlyTrialModerator: false
   };
 
-// console.log('checking permission for V >'+message.author.tag);
-  let permission_in_general =  myFunctions.is_allowed(epic_permission_check, myFunctions.check_permissions(message.member)) ;
+  // console.log('checking permission for V >'+message.author.tag);
+  let permission_in_general = myFunctions.is_allowed(epic_permission_check, myFunctions.check_permissions(message.member));
 
 
 
@@ -232,7 +238,7 @@ client.on("message", async message => {
 
 
 
-  if (message.channel.id != '764933106820972544' && !permission_in_general) return ;
+  if (message.channel.id != '764933106820972544' && !permission_in_general) return;
 
   // console.log(permission_in_general + " for "+message.author.tag);
 
@@ -273,11 +279,11 @@ client.on("message", async message => {
   let command = client.commands.get(cmd);
   if (!command) command = client.commands.get(client.aliases.get(cmd));
   if (command) {
-      if (CC_id.has(cmd))
+    if (CC_id.has(cmd))
       return message.reply("This command has 15sec cooldown!!")
-    
 
-  //  console.log('command passed ,used by'+message.author.tag);
+
+    //  console.log('command passed ,used by'+message.author.tag);
 
 
     command.run(client, message, args, cmd);
