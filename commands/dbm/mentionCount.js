@@ -14,7 +14,7 @@ module.exports = {
     category: "info",
     aliases: ["delete-mentions", "set-mentions"],
     description: ' manipulate Mentions Data ',
-    usage: `${config.prefix}mentions`,
+    usage: `${config.prefix}count`,
 
     run: async (client, message, args, cmd) => {
         var local_prm = {
