@@ -63,7 +63,7 @@
     const die = require('util').promisify(setTimeout);
     let conVal = 0;
 
-    const MaxCollectorTime = 30 * 1000;
+    const MaxCollectorTime = 10 * 60 * 1000;
     const MAX_IncompleteAttempt = 3;
     const MAX_IncompleteAttemptPersonal = 10;
     const dbTableName = 'recruitment'; // mainDB
@@ -77,11 +77,11 @@
             success: 'Successfully Completed the QnA session.',
             reason1: 'User Reached Max incomplete Attempts.',
             reason2: 'User Already applied for this position.',
-            reason3: `User didn't reply within ${MaxCollectorTime/1000} seconds.`,
+            reason3: `User didn't reply within ${MaxCollectorTime/60000} minutes.`,
             reason4: 'user denied to start QnA session.',
             reason5: 'user used \'stop\' command.',
             reason6: 'user banned from this Position / all Positions.',
-            idle: `User didn't reply within ${MaxCollectorTime/1000} seconds.`
+            idle: `User didn't reply within ${MaxCollectorTime/60000} minutes.`
         };
         return Original_reasons[rsn];
     }
@@ -177,7 +177,7 @@
                     const temp_em = new MessageEmbed()
                         .setColor('RED')
                         .setTimestamp()
-                        .setDescription(`Hi ${message.author},\nWe Have Opening Following Positions !\nFor Which Position you want to apply ? (type the name)`)
+                        .setDescription(`Hi ${message.author},\nWe Have Opening Following Position.\nFor Which Position you want to apply? (type the name)`)
                         .setTitle("Opening Positions");
                     openingPositionData.forEach((rt, i) => {
                         temp_em.addField(i + 1, rt.name);
@@ -203,7 +203,11 @@
                         return false;
                     }
 
-                    if (msg.content.toLowerCase() == 'stop') {
+                    if (msg.content.toLowerCase() == 'stop' || msg.content.toLowerCase() == 'no') {
+                        if (msg.content.toLowerCase() == 'no') {
+                            collector.stop('reason4');
+                            return false;
+                        }
                         // DoIhaveData.cnt=count;
                         collector.stop('reason5');
                         return false;
@@ -264,7 +268,7 @@
 
 
                                 message.author.send(new MessageEmbed().setDescription(`
-                            **For this Position ,you have to answer ${currentPositionData.qsn.length} Questions** !!\n\n
+                            **For this Position ,you have to answer ${currentPositionData.qsn.length} Questions** .\n\n
                             **Are Ready For a short QnA session ?**\n ( type yes/no)\n\n
                             Type ${markDown('stop')} to end this process .
                             `));
@@ -287,14 +291,14 @@
                             return false;
                         }
                     } else if (count == 2) {
-                        if (msg.content.toLowerCase() == 'yes' || message.content.toLowerCase() == 'no') {
+                        if (msg.content.toLowerCase() == 'yes' || message.content == 'no') {
                             if (msg.content.toLowerCase() == 'yes') {
 
                                 count++;
 
                                 ///creating the 1st question
                                 const tmem = new MessageEmbed()
-                                    .setTitle(`QnA session with ${message.author.tag} for ${currentPositionData.name} Position !`)
+                                    .setTitle(`QnA session with ${message.author.tag} for ${currentPositionData.name} Position.`)
                                     .setDescription('Enter your answer !!')
                                     .setTimestamp()
                                     .setColor('GREEN');
@@ -340,7 +344,7 @@
                             return true;
                         }
                         let tempem = new MessageEmbed()
-                            .setTitle(`QnA session with ${message.author.tag} for ${currentPositionData.name} Position !`)
+                            .setTitle(`QnA session with ${message.author.tag} for ${currentPositionData.name} Position.`)
                             .setDescription('Enter you answer !!')
                             .setTimestamp()
                             .setColor('GREEN');
@@ -374,7 +378,7 @@
                     if (!QSNcount) {
                         let error_em = new MessageEmbed()
                             .setTitle("The process has been stopped !!")
-                            .setDescription(`Your ID has been logged  in as 'Incomplete Attempt' .it might cause some trouble if we feels someone trying to abuse the Bot !! `)
+                            .setDescription(`Your ID has been logged  in as **Incomplete Attempt** .it might cause some trouble if we feels someone trying to abuse the Bot. `)
                             .addField(`Position Name :`, currentPositionData.name, true)
                             .addField('Applicant : ', `<@${message.author.id}>`, true)
                             .addField('Question Asked : ', QSNcount, true)
@@ -444,9 +448,9 @@
 
 
                         message.channel.send(new MessageEmbed()
-                            .setTitle("Successfully submitted you Responses !!")
+                            .setTitle("Successfully submitted you Responses.")
                             .setDescription(`Thanks For applying.Please do not message/ping any staff to ask about your application .
-                        If you get selected ,you will hear from us very soon .
+                            If you get picked, you will be contacted from a staff member.
                         If you are denied ,don't be upset . you may re-apply when applications are open again.`)
                             .addField(`Position Name :`, currentPositionData.name, true)
                             .addField('Applicant : ', `<@${message.author.id}>`, true)
@@ -482,7 +486,7 @@
 
                         let error_em = new MessageEmbed()
                             .setTitle("The process has been stopped !!")
-                            .setDescription(`Your ID has been logged  in as 'Incomplete Attempt' .it might cause some trouble if we feels someone trying to abuse the Bot !! `)
+                            .setDescription(`Your ID has been logged  in as **Incomplete Attempt**.It may result in a punishment if we feels someone trying to abuse the Bot !! `)
                             .addField(`Position Name :`, currentPositionData.name, true)
                             .addField('Applicant : ', `<@${message.author.id}>`, true)
                             .addField('Question Asked : ', QSNcount, true)
@@ -494,7 +498,7 @@
                         message.channel.send(error_em);
                         //sending message to admins by editing title 
                         error_em.setTitle('Received an Incomplete Attempt');
-                        error_em.setDescription(`user ID has been logged  in as 'Incomplete Attempt' .it might cause some trouble if we feels someone trying to abuse the Bot !! `)
+                        error_em.setDescription(`user ID has been logged  in as **Incomplete Attempt** .It may result in a punishment if we feels someone trying to abuse the Bot !! `)
                         //adding if user response any question
                         collected = collected.array();
                         collected.forEach((mess, itx) => {

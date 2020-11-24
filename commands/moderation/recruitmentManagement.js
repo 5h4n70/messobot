@@ -327,7 +327,7 @@ module.exports = {
                 const target_channel = message.mentions.channels.first();
                 let temp_title;
                 let commandCount = 0;
-                const max_allowed_time = 30 * 1000;
+                const max_allowed_time =2* 60 * 1000;
                 let messageCollected = new Array();
                 const cEmbed = new MessageEmbed()
                     .setColor('RANDOM')

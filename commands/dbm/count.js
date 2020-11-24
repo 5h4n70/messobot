@@ -6,6 +6,7 @@ const {
 const config = require("../../config.json");
 const Qdb = require('quick.db');
 const myFunctions = require('../../functions.js');
+
 async function get_the_last_number(client, message) {
     const channelID = config.countChannel;
     const serverID = config.serverId;
@@ -106,7 +107,7 @@ module.exports = {
                    if(k){
                     Qdb.delete('last_count');
                     Qdb.push('last_count', k);
-                    message.reply(new MessageEmbed().setDescription(`\n fixed !! 😀 \n`));
+                    message.reply(new MessageEmbed().setDescription(`\n fixed !! 😀 \nthe Number count to next is ${k+1}`));
                    }
                    else{
                        message.reply(new MessageEmbed().setDescription(`Sorry, failed to fix \n try manually :(  )`));

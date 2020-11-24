@@ -54,10 +54,11 @@ module.exports = {
                 else
                     tp1.send(args.slice(1).join(" "));
             } else if (cmd == 'embed') {
-
+                const cl = args[0];
+                args.shift();
 
                 const p = new MessageEmbed()
-                    .setColor('RANDOM')
+                    .setColor(cl)
                     .setDescription(args.join(" "));
 
                 message.channel.send(p);
